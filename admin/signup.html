@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 0;
+        }
+        .signup-container {
+            max-width: 500px;
+            width: 100%;
+            padding: 15px;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .card-header {
+            background-color: #4a6bdf;
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 25px 20px;
+        }
+        .card-header h3 {
+            margin-bottom: 5px;
+        }
+        .btn-primary {
+            background-color: #4a6bdf;
+            border-color: #4a6bdf;
+            padding: 12px;
+            font-weight: 500;
+            border-radius: 8px;
+        }
+        .btn-primary:hover {
+            background-color: #3955b8;
+            border-color: #3955b8;
+        }
+        .btn-outline-secondary {
+            border-color: #d0d0d0;
+            color: #505050;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .btn-outline-secondary:hover {
+            background-color: #f0f0f0;
+            color: #303030;
+        }
+        .form-control {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #d0d0d0;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 0 3px rgba(74, 107, 223, 0.25);
+            border-color: #4a6bdf;
+        }
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #808080;
+        }
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #d0d0d0;
+        }
+        .divider::before {
+            margin-right: 10px;
+        }
+        .divider::after {
+            margin-left: 10px;
+        }
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .alert {
+            display: none;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+        .spinner-border {
+            display: none;
+            margin-right: 5px;
+        }
+        .signin-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .signin-link a {
+            color: #4a6bdf;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .signin-link a:hover {
+            text-decoration: underline;
+        }
+        .terms {
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 15px;
+            color: #707070;
+        }
+        .terms a {
+            color: #4a6bdf;
+            text-decoration: none;
+        }
+        .terms a:hover {
+            text-decoration: underline;
+        }
+        .password-strength {
+            display: none;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+        .strength-meter {
+            height: 4px;
+            background-color: #e0e0e0;
+            margin-bottom: 8px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .strength-meter-fill {
+            height: 100%;
+            width: 0;
+            background-color: #dc3545;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        .back-icon {
+            font-size: 24px;
+            color: white;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container signup-container">
+        <div class="card">
+            <div class="card-header text-center position-relative">
+                <i class="bi bi-arrow-left back-icon" id="backButton"></i>
+                <h3>Create New Account</h3>
+                <p class="mb-0">Sign up to get started</p>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-danger" id="errorMessage" role="alert"></div>
+                        
+                <!-- Email Sign-up Form -->
+                <form id="signupForm">
+                    <div class="mb-3">
+                        <label for="fullName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="fullName" placeholder="Enter your full name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Create a password" required>
+                        
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="strength-meter">
+                                <div class="strength-meter-fill" id="strengthMeter"></div>
+                            </div>
+                            <span class="text-muted" id="strengthText">Password strength: Weak</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="termsCheck" required>
+                        <label class="form-check-label" for="termsCheck">I agree to the Terms of Service and Privacy Policy</label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">
+                        <span class="spinner-border spinner-border-sm" id="signupSpinner" role="status" aria-hidden="true"></span>
+                        Create Account
+                    </button>
+                </form>
+                
+                <div class="terms">
+                    By signing up, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+                </div>
+            </div>
+        </div>
+        
+        <div class="signin-link">
+            Already have an account? <a href="/login.html">Sign in</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <!-- Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase configuration - Replace with your config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAemXfk1myFCArAlQMgshsJ3FvJtQUMYsE",
+            authDomain: "ai-travel-planner-2293a.firebaseapp.com",
+            databaseURL: "https://ai-travel-planner-2293a-default-rtdb.firebaseio.com",
+            projectId: "ai-travel-planner-2293a",
+            storageBucket: "ai-travel-planner-2293a.firebasestorage.app",
+            messagingSenderId: "945390041464",
+            appId: "1:945390041464:web:67761d7d7ff3bad1f7b08d",
+            measurementId: "G-R3F6SR0HY9"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        // Reference to auth and firestore
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // DOM elements
+        const signupForm = document.getElementById('signupForm');
+        const fullNameInput = document.getElementById('fullName');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const termsCheckbox = document.getElementById('termsCheck');
+        const errorMessage = document.getElementById('errorMessage');
+        const signupSpinner = document.getElementById('signupSpinner');
+        const backButton = document.getElementById('backButton');
+        const passwordStrength = document.getElementById('passwordStrength');
+        const strengthMeter = document.getElementById('strengthMeter');
+        const strengthText = document.getElementById('strengthText');
+        
+        // Check if user is already logged in
+        auth.onAuthStateChanged(function(user) {
+            if (user) {
+                // User is signed in, redirect to main app
+                window.location.href = '/index.html'; // Change to your app's main page
+            }
+        });
+        
+        // Back button functionality
+        backButton.addEventListener('click', function() {
+            window.history.back();
+        });
+        
+        // Password strength meter
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            
+            if (password.length > 0) {
+                passwordStrength.style.display = 'block';
+                
+                // Calculate strength
+                let strength = 0;
+                
+                // Length check
+                if (password.length >= 8) {
+                    strength += 25;
+                }
+                
+                // Uppercase check
+                if (/[A-Z]/.test(password)) {
+                    strength += 25;
+                }
+                
+                // Number check
+                if (/[0-9]/.test(password)) {
+                    strength += 25;
+                }
+                
+                // Special character check
+                if (/[^A-Za-z0-9]/.test(password)) {
+                    strength += 25;
+                }
+                
+                // Update meter
+                strengthMeter.style.width = strength + '%';
+                
+                // Update color and text
+                if (strength <= 25) {
+                    strengthMeter.style.backgroundColor = '#dc3545'; // red
+                    strengthText.textContent = 'Password strength: Weak';
+                } else if (strength <= 50) {
+                    strengthMeter.style.backgroundColor = '#ffc107'; // yellow
+                    strengthText.textContent = 'Password strength: Fair';
+                } else if (strength <= 75) {
+                    strengthMeter.style.backgroundColor = '#6c757d'; // grey
+                    strengthText.textContent = 'Password strength: Good';
+                } else {
+                    strengthMeter.style.backgroundColor = '#28a745'; // green
+                    strengthText.textContent = 'Password strength: Strong';
+                }
+            } else {
+                passwordStrength.style.display = 'none';
+            }
+        });
+        
+        // Sign up form submission
+        signupForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show spinner
+            signupSpinner.style.display = 'inline-block';
+            
+            // Hide any previous error messages
+            errorMessage.style.display = 'none';
+            
+            const fullName = fullNameInput.value;
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            
+            if (!termsCheckbox.checked) {
+                showError('You must agree to the Terms of Service and Privacy Policy.');
+                signupSpinner.style.display = 'none';
+                return;
+            }
+            
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Successfully created user
+                    const user = userCredential.user;
+                    
+                    // Store additional user info in Firestore
+                    return db.collection('users').doc(user.uid).set({
+                        email: email,
+                        fullName: fullName,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                })
+                .then(() => {
+                    // Redirect to main app
+                    window.location.href = 'mytrip.html'; // Change to your app's main page
+                })
+                .catch((error) => {
+                    // Hide spinner
+                    signupSpinner.style.display = 'none';
+                    
+                    // Handle errors
+                    let errorMsg = 'Sign up failed. Please try again.';
+                    
+                    switch (error.code) {
+                        case 'auth/email-already-in-use':
+                            errorMsg = 'This email is already in use. Please try signing in.';
+                            break;
+                        case 'auth/invalid-email':
+                            errorMsg = 'Invalid email format.';
+                            break;
+                        case 'auth/weak-password':
+                            errorMsg = 'Password is too weak. Please use a stronger password.';
+                            break;
+                        case 'auth/operation-not-allowed':
+                            errorMsg = 'Email/password accounts are not enabled.';
+                            break;
+                    }
+                    
+                    showError(errorMsg);
+                    console.error("Error signing up:", error);
+                });
+        });
+        
+        
+        // Show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

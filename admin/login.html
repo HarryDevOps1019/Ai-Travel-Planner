@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .signin-container {
+            max-width: 450px;
+            width: 100%;
+            padding: 15px;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .card-header {
+            background-color: #4a6bdf;
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 25px 20px;
+        }
+        .card-header h3 {
+            margin-bottom: 5px;
+        }
+        .btn-primary {
+            background-color: #4a6bdf;
+            border-color: #4a6bdf;
+            padding: 12px;
+            font-weight: 500;
+            border-radius: 8px;
+        }
+        .btn-primary:hover {
+            background-color: #3955b8;
+            border-color: #3955b8;
+        }
+        .btn-outline-secondary {
+            border-color: #d0d0d0;
+            color: #505050;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .btn-outline-secondary:hover {
+            background-color: #f0f0f0;
+            color: #303030;
+        }
+        .form-control {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #d0d0d0;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 0 3px rgba(74, 107, 223, 0.25);
+            border-color: #4a6bdf;
+        }
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #808080;
+        }
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #d0d0d0;
+        }
+        .divider::before {
+            margin-right: 10px;
+        }
+        .divider::after {
+            margin-left: 10px;
+        }
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .alert {
+            display: none;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+        .spinner-border {
+            display: none;
+            margin-right: 5px;
+        }
+        .forgot-password {
+            color: #4a6bdf;
+            text-decoration: none;
+        }
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .signup-link a {
+            color: #4a6bdf;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container signin-container">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3>Welcome Back</h3>
+                <p class="mb-0">Sign in to your account</p>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-danger" id="errorMessage" role="alert"></div>
+                
+                
+                <!-- Email Sign-in Form -->
+                <form id="signinForm">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password">Forgot password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">
+                        <span class="spinner-border spinner-border-sm" id="signinSpinner" role="status" aria-hidden="true"></span>
+                        Sign In
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="signup-link">
+            Don't have an account? <a href="/signup.html">Sign up</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <!-- Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase configuration - Replace with your config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAemXfk1myFCArAlQMgshsJ3FvJtQUMYsE",
+            authDomain: "ai-travel-planner-2293a.firebaseapp.com",
+            databaseURL: "https://ai-travel-planner-2293a-default-rtdb.firebaseio.com",
+            projectId: "ai-travel-planner-2293a",
+            storageBucket: "ai-travel-planner-2293a.firebasestorage.app",
+            messagingSenderId: "945390041464",
+            appId: "1:945390041464:web:67761d7d7ff3bad1f7b08d",
+            measurementId: "G-R3F6SR0HY9"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        // Reference to auth
+        const auth = firebase.auth();
+        
+        // DOM elements
+        const signinForm = document.getElementById('signinForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const rememberMeCheckbox = document.getElementById('rememberMe');
+        const errorMessage = document.getElementById('errorMessage');
+        const signinSpinner = document.getElementById('signinSpinner');
+        
+        // Check if user is already logged in
+        auth.onAuthStateChanged(function(user) {
+            if (user) {
+                // User is signed in, redirect to main app
+                window.location.href = '/index.html'; // Change to your app's main page
+            }
+        });
+        
+        // Sign in form submission
+        signinForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show spinner
+            signinSpinner.style.display = 'inline-block';
+            
+            // Hide any previous error messages
+            errorMessage.style.display = 'none';
+            
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            const rememberMe = rememberMeCheckbox.checked;
+            
+            // Set persistence based on "Remember me" checkbox
+            const persistence = rememberMe ? 
+                firebase.auth.Auth.Persistence.LOCAL : 
+                firebase.auth.Auth.Persistence.SESSION;
+            
+            auth.setPersistence(persistence)
+                .then(() => {
+                    return auth.signInWithEmailAndPassword(email, password);
+                })
+                .then((userCredential) => {
+                    // Successfully signed in
+                    window.location.href = '/index.html'; // Change to your app's main page
+                })
+                .catch((error) => {
+                    // Hide spinner
+                    signinSpinner.style.display = 'none';
+                    
+                    // Handle errors
+                    let errorMsg = 'Sign in failed. Please try again.';
+                    
+                    switch (error.code) {
+                        case 'auth/invalid-email':
+                            errorMsg = 'Invalid email format.';
+                            break;
+                        case 'auth/user-disabled':
+                            errorMsg = 'This account has been disabled.';
+                            break;
+                        case 'auth/user-not-found':
+                        case 'auth/wrong-password':
+                            errorMsg = 'Invalid email or password.';
+                            break;
+                        case 'auth/too-many-requests':
+                            errorMsg = 'Too many failed login attempts. Please try again later.';
+                            break;
+                    }
+                    
+                    showError(errorMsg);
+                    console.error("Error signing in:", error);
+                });
+        });
+        
+        
+        // Show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+        
+        // Try to load email from localStorage if available
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedEmail = localStorage.getItem('userEmail');
+            if (savedEmail) {
+                emailInput.value = savedEmail;
+                rememberMeCheckbox.checked = true;
+            }
+            
+            // Add event listener for remember me checkbox
+            rememberMeCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    localStorage.setItem('userEmail', emailInput.value);
+                } else {
+                    localStorage.removeItem('userEmail');
+                }
+            });
+            
+            // Save email when typing if remember me is checked
+            emailInput.addEventListener('input', function() {
+                if (rememberMeCheckbox.checked) {
+                    localStorage.setItem('userEmail', this.value);
+                }
+            });
+        });
+        
+        // Forgot password functionality
+        document.querySelector('.forgot-password').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const email = emailInput.value;
+            
+            if (!email) {
+                showError('Please enter your email address to reset your password.');
+                return;
+            }
+            
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    alert('Password reset email sent. Please check your inbox.');
+                })
+                .catch((error) => {
+                    showError('Error sending password reset email. Please try again.');
+                    console.error("Error with password reset:", error);
+                });
+        });
+    </script>
+</body>
+</html>
